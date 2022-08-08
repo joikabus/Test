@@ -18,13 +18,13 @@ class KeywordsAnalyzer(ABC):
         pass
      
     @abstractmethod
-    def getLabel(self , text):
+    def _getLabel(self , text):
         pass
     
 
 class NegativeTextAnalyzer(KeywordsAnalyzer , TextAnalyzer):  
     _keywords = ["=(" , ":|" , "8="]  
-    def getLabel(self , text):
+    def _getLabel(self , text):
         for item in self._keywords:
             if item in text:
                 return Label.NEGATIVE_TEXT
@@ -35,12 +35,12 @@ class NegativeTextAnalyzer(KeywordsAnalyzer , TextAnalyzer):
         return self._keywords
     
     def processText(self , text):
-        return self.getLabel(text)
+        return self._getLabel(text)
     
 
 class SpamAnalyzer(KeywordsAnalyzer , TextAnalyzer):
     _keywords = ["пас" , "бас" , "кас"]  
-    def getLabel(self , text):
+    def _getLabel(self , text):
         for item in self._keywords:
             if item in text:
                 return Label.SPAM
@@ -51,7 +51,7 @@ class SpamAnalyzer(KeywordsAnalyzer , TextAnalyzer):
         return self._keywords
     
     def processText(self , text):
-        return self.getLabel(text)
+        return self._getLabel(text)
         
 class TooLongTextAnalyzer(TextAnalyzer):
     _maxLength = 4
@@ -66,8 +66,11 @@ def checkLabel():
     array = [NegativeTextAnalyzer()  , SpamAnalyzer()  , TooLongTextAnalyzer()]
     message = "=( пас"
     for item in array:
+        
         getterItem = item.processText(message)
-        print(getterItem)
+        if getterItem != Label.OK:
+            print(getterItem)
+            break
 
 checkLabel()
         
